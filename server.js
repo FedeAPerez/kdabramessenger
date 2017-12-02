@@ -73,7 +73,7 @@ app.get('/webhook', function(req, res) {
     var method = elements[0];
     var signatureHash = elements[1];
     // debemos conseguir el app secret según el page id
-    var expectedHash = crypto.createHmac('sha1', APP_SECRET)
+    var expectedHash = crypto.createHmac('sha1', "kdabra_kdabrafanpage")
     .update(buf)
     .digest('hex');
 
