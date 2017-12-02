@@ -44,7 +44,7 @@ config.get('serverURL');
 app.get('/webhook', function(req, res) {
   console.log("entre al webhook y voy a consultar según el request" + req);
   if (req.query['hub.mode'] === 'subscribe' &&
-    req.query['hub.verify_token'] === VALIDATION_TOKEN) {
+    req.query['hub.verify_token'] === "kdabra_kdabrafanpage") {
     console.log("Validating webhook");
   res.status(200).send(req.query['hub.challenge']);
 } else {
