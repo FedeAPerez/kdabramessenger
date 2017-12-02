@@ -50,9 +50,9 @@ app.get('/webhook', function(req, res) {
     trackEvent('Validacion', 'OK', 'Validacioncompleta', '100').then(() => {
       res.status(200).send(req.query['hub.challenge']);
     })
-    .catch(
+    .catch(() => {
       console.log("failed to track");
-    );
+    });
   } else {
     console.error("Failed validation. Make sure the validation tokens match.");
     res.sendStatus(403);          
