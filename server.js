@@ -42,7 +42,7 @@ config.get('serverURL');
  * Weebhock de conexión a KDABRA según page
  * */
 app.get('/webhook', function(req, res) {
-  console.log("entre al webhook y voy a consultar según el request" + JSON.stringify(req));
+  console.log("entre al webhook y voy a consultar según el request" + req);
   if (req.query['hub.mode'] === 'subscribe' &&
     req.query['hub.verify_token'] === VALIDATION_TOKEN) {
     console.log("Validating webhook");
