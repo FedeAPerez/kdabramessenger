@@ -4,7 +4,8 @@ config = require('config'),
 express = require('express'),
 crypto = require('crypto'),
 https = require('https'),  
-request = require('request');
+request = require('request'),
+got = require('got');
 
 var app = express();
 
@@ -43,14 +44,17 @@ config.get('serverURL');
  * */
 app.get('/webhook', function(req, res) {
   console.log("entre al webhook y voy a consultar según el request" + req);
-  if (req.query['hub.mode'] === 'subscribe' &&
-    req.query['hub.verify_token'] === "kdabra_kdabrafanpage") {
+  
+  if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === "kdabra_kdabrafanpage") {
     console.log("Validating webhook");
-  res.status(200).send(req.query['hub.challenge']);
-} else {
-  console.error("Failed validation. Make sure the validation tokens match.");
-  res.sendStatus(403);          
-}  
+    trackEvent('Validacion', 'OK', 'Validacioncompleta', '100').then(() => {
+      res.status(200).send(req.query['hub.challenge']);
+    })
+    .catch(next);
+  } else {
+    console.error("Failed validation. Make sure the validation tokens match.");
+    res.sendStatus(403);          
+  }  
 });
 
 /*
@@ -262,53 +266,78 @@ function receivedPostback(messagingEvent){
   console.log("que tiene el payload " + messagingEvent.postback.payload);
   try {
    postBackObject =  JSON.parse(messagingEvent.postback.payload);
- } catch (e) {
+  } catch (e) {
   postBackObject.payload = messagingEvent.postback.payload;
-}
+  }
 
-var senderID = messagingEvent.sender.id;
+  var senderID = messagingEvent.sender.id;
 
-switch(postBackObject.payload){
-  case "GET_STARTED_PAYLOAD":
-    sendTextMessage(senderID, "Hola, y bienvenido al Almacén de Pán y Café. Clickea sobre el menú y mirá todas la info que te podemos dar!");
-  
-  ;break;
+  switch(postBackObject.payload){
+    case "GET_STARTED_PAYLOAD":
+      sendTextMessage(senderID, "Hola, y bienvenido al Almacén de Pán y Café. Clickea sobre el menú y mirá todas la info que te podemos dar!");
+    
+    ;break;
 
-  case "AVAIABLE_LOCATIONS":
-    sendTextMessage(senderID, "Hacemos envíos por toda la zona de Hurlingham!");
-  ;break;
+    case "AVAIABLE_LOCATIONS":
+      sendTextMessage(senderID, "Hacemos envíos por toda la zona de Hurlingham!");
+    ;break;
 
-  case "CONTACT":
-  var messageData = {
-    recipient: {
-      id: senderID
-    },
-    message: {
-      attachment:{
-        type:"template",
-        payload:{
-          template_type:"button",
-          text:"Queres hablar con alguien del Almacen de Pan y Cafe?",
-          buttons:[
-          {
-            "type":"phone_number",
-            "title":"Apreta para llamar!",
-            "payload":"+541168059706"
+    case "CONTACT":
+    var messageData = {
+      recipient: {
+        id: senderID
+      },
+      message: {
+        attachment:{
+          type:"template",
+          payload:{
+            template_type:"button",
+            text:"Queres hablar con alguien del Almacen de Pan y Cafe?",
+            buttons:[
+            {
+              "type":"phone_number",
+              "title":"Apreta para llamar!",
+              "payload":"+541168059706"
+            }
+            ]
           }
-          ]
         }
       }
-    }
-  };
+    };
 
-  callSendAPI(messageData);
-  ;break;
+    callSendAPI(messageData);
+    ;break;
 
-  userStartPostback(senderID);
-  ;break;
-}     
+    userStartPostback(senderID);
+    ;break;
+  }     
 }
 
+function trackEvent (category, action, label, value, cb) {
+  const data = {
+    // API Version.
+    v: '1',
+    // Tracking ID / Property ID.
+    tid: "UA-110548154-1",
+    // Anonymous Client Identifier. Ideally, this should be a UUID that
+    // is associated with particular user, device, or browser instance.
+    cid: '555',
+    // Event hit type.
+    t: 'event',
+    // Event category.
+    ec: category,
+    // Event action.
+    ea: action,
+    // Event label.
+    el: label,
+    // Event value.
+    ev: value
+  };
+
+  return got.post('http://www.google-analytics.com/collect', {
+    form: data
+  });
+}
 
 // Start server
 // Webhooks must be available via SSL with a certificate signed by a valid 
