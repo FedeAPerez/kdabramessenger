@@ -1,0 +1,29 @@
+{
+  "name": "kdabramessenger",
+  "version": "1.0.0",
+  "description": "ui to api de kdabra",
+  "main": "server.js",
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FedeAPerez/kdabramessenger.git"
+  },
+  "author": "Federico Pérez / Doers",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FedeAPerez/kdabramessenger/issues"
+  },
+  "homepage": "https://github.com/FedeAPerez/kdabramessenger#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "config": "^1.28.1",
+    "crypto": "^1.0.1",
+    "express": "^4.16.2",
+    "https": "^1.0.0",
+    "mongodb": "^2.2.33",
+    "request": "^2.83.0"
+  }
+}
