@@ -38,15 +38,18 @@ const SERVER_URL = (process.env.SERVER_URL) ?
 (process.env.SERVER_URL) :
 config.get('serverURL');
 
+const validationToken = (process.env.VALIDATION_TOKEN) ?
+(process.env.VALIDATION_TOKEN) :
+config.get('validationToken');
+
 
 /* *
  * Weebhock de conexión a KDABRA según page
  * */
 app.get('/webhook', function(req, res) {
-  console.log("entre al webhook y voy a consultar según el request" + req);
-  
-  if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === "kdabra_kdabrafanpageval") {
-    console.log("Validating webhook");
+  // Token único para proceso de registrar
+  if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === validationToken) {
+    // Registrar evento en Google Analytics
     trackEvent('Validacion', 'OK', 'Validacioncompleta', '100').then(() => {
       res.status(200).send(req.query['hub.challenge']);
     })
