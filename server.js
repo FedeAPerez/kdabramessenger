@@ -345,13 +345,10 @@ function trackEvent (category, action, label, value, cb) {
     // Event value.
     ev: value
   };
-  const response = await got.post('http://www.google-analytics.com/collect', {
+
+  return got.post('http://www.google-analytics.com/collect', {
     form: data
-  });
-  
-  console.log(response.body);
-  
-  return 1;
+  }).on('response', res => console.log("response de ana " + res.body) );;
 }
 
 // Start server
