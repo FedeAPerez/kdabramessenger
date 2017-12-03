@@ -50,7 +50,7 @@ app.get('/webhook', function(req, res) {
   // Token único para proceso de registrar
   if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === validationToken) {
     // Registrar evento en Google Analytics
-    trackEvent('Validacion', 'OK', 'Validacioncompleta', '100').then(() => {
+    trackEvent('Validacion', 'OK', 'Validacion completa', 100).then(() => {
       res.status(200).send(req.query['hub.challenge']);
     })
     .catch(() => {
@@ -58,7 +58,13 @@ app.get('/webhook', function(req, res) {
     });
   } else {
     console.error("Failed validation. Make sure the validation tokens match.");
-    res.sendStatus(403);          
+    trackEvent('Validacion', 'Fallida', 'Validacion incompleta', 0).then(() => {
+      res.sendStatus(403);  
+    })
+    .catch(() => {
+      console.log("failed to track");
+    });
+        
   }  
 });
 
@@ -82,6 +88,7 @@ app.get('/webhook', function(req, res) {
     var method = elements[0];
     var signatureHash = elements[1];
     // debemos conseguir el app secret según el page id
+    
     var expectedHash = crypto.createHmac('sha1', "fc54e78765d094b1740350073166443f")
     .update(buf)
     .digest('hex');

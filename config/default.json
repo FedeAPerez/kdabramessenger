@@ -1,5 +1,6 @@
 {
     "serverURL": "https://kdabramessenger.herokuapp.com/",
-    "validationToken" : "kdabra_kdabrafanpageval"
+    "validationToken" : "kdabra_kdabrafanpageval",
+    "urlKdabraApi" : "https://kdabraapi.herokuapp.com/"
 }
 
