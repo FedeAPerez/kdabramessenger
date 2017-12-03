@@ -349,9 +349,9 @@ function trackEvent (category, action, label, value, cb) {
   got.post('http://www.google-analytics.com/collect', {
     form: data
   }).on('response', (res) => {
-    console.log("response de ana " + res.body) }
+    console.log("response de ana " + res.body)
     return;
-  );
+  });
 
 }
 
