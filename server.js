@@ -340,11 +340,18 @@ function trackEvent (category, action, label, value, cb) {
     ev: value
   };
 
-  visitor.pageview("/test", "http://kdabraapp.com", "Welcome", function (err) {
+  //visitor.pageview("/test", "http://kdabraapp.com", "Welcome", function (err) {
     return visitor.event(data, function(err){
-      cb(err);
+      var status = true;
+      if(err)
+        status = false;
+      var response = {
+        status : status,
+        error : err
+      };
+      cb(response);
     });
-  });
+  //});
 }
 
 // Start server
