@@ -52,7 +52,7 @@ app.get('/webhook', function(req, res) {
   // Token único para proceso de registrar
   if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === validationToken) {
     // Registrar evento en Google Analytics
-    trackEvent('Validacion', 'OK', 'Validacion completa', 100).then((response) => {
+    trackEvent('Validacion', 'OK', 'Validacion completa', 100, (response) => {
       console.log("response de ana " + response.body)
       res.status(200).send(req.query['hub.challenge']);
     })
@@ -341,7 +341,9 @@ function trackEvent (category, action, label, value, cb) {
   };
 
 
-  return visitor.event(data);
+  return visitor.event(data, function(err){
+    cb(err);
+  });
 
 }
 
