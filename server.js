@@ -85,7 +85,7 @@ app.get('/webhook', function(req, res) {
     var signatureHash = elements[1];
     // debemos conseguir el app secret según el page id
     var urlPageId = 'https://kdabraapi.herokuapp.com/users/pageid/{page_id}'.replace(/{page_id}/g, encodeURIComponent(req.body.page_id)) ;
-
+      console.log("la cadena de url quedo " + urlPageId);
       request({
         uri: urlPageId,
         method: 'GET'
