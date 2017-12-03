@@ -341,9 +341,7 @@ function trackEvent (category, action, label, value, cb) {
   };
 
 
-  visitor.event(data, function(err){
-    return err;
-  });
+  return visitor.event(data);
 
 }
 
