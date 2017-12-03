@@ -346,7 +346,7 @@ function trackEvent (category, action, label, value, cb) {
       if(err)
         status = false;
       var response = {
-        status : status,
+        body : status,
         error : err
       };
       cb(response);
