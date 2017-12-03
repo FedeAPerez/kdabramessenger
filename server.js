@@ -74,7 +74,7 @@ app.get('/webhook', function(req, res) {
  */
  function verifyRequestSignature(req, res, buf) {
   var signature = req.headers["x-hub-signature"];
-
+  var data = req.body;
   if (!signature) {
     // For testing, let's log an error. In production, you should throw an 
     // error.
@@ -84,7 +84,7 @@ app.get('/webhook', function(req, res) {
     var method = elements[0];
     var signatureHash = elements[1];
     // debemos conseguir el app secret según el page id
-    var urlPageId = 'https://kdabraapi.herokuapp.com/users/pageid/{page_id}'.replace(/{page_id}/g, encodeURIComponent(req.body.entry.id)) ;
+    var urlPageId = 'https://kdabraapi.herokuapp.com/users/pageid/{page_id}'.replace(/{page_id}/g, encodeURIComponent(req.body.entry[0].id)) ;
       console.log("la cadena de url quedo " + urlPageId);
       request({
         uri: urlPageId,
