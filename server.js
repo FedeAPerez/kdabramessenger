@@ -52,8 +52,7 @@ app.get('/webhook', function(req, res) {
   // Token único para proceso de registrar
   if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === validationToken) {
     // Registrar evento en Google Analytics
-    trackEvent('Validacion', 'OK', 'Validacion completa', 100, (response) => {
-      console.log("response de ana " + response.body)
+    trackEvent('Validacion', 'OK', 'Validacion completa', 100, '/Weebhock', (response) => {
       res.status(200).send(req.query['hub.challenge']);
     });
   } else {
@@ -325,7 +324,7 @@ function receivedPostback(messagingEvent){
   }     
 }
 
-function trackEvent (category, action, label, value, cb) {
+function trackEvent (category, action, label, value, path, cb) {
   var data = {
     // Event category.
     ec: category,
@@ -334,7 +333,8 @@ function trackEvent (category, action, label, value, cb) {
     // Event label.
     el: label,
     // Event value.
-    ev: value
+    ev: value,
+    dp: path,
   };
 
   //visitor.pageview("/test", "http://kdabraapp.com", "Welcome", function (err) {
@@ -342,10 +342,12 @@ function trackEvent (category, action, label, value, cb) {
       var status = true;
       if(err)
         status = false;
+
       var response = {
         body : status,
         error : err
       };
+
       cb(response);
     });
   //});
