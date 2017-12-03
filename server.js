@@ -52,18 +52,15 @@ app.get('/webhook', function(req, res) {
   // Token único para proceso de registrar
   if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === validationToken) {
     // Registrar evento en Google Analytics
-    trackEvent('Validacion', 'OK', 'Validacion completa', 100, '/Weebhock', (response) => {
+    trackEvent('Validacion', 'OK', 'Validacion completa', 100, '/webhook', (response) => {
       res.status(200).send(req.query['hub.challenge']);
     });
   } else {
     console.error("Failed validation. Make sure the validation tokens match.");
-    trackEvent('Validacion', 'Fallida', 'Validacion incompleta', 0).then(() => {
-      res.sendStatus(403);  
-    })
-    .catch(() => {
-      console.log("failed to track");
-    });
-        
+    // Registrar evento en Google Analytics
+    trackEvent('Validacion', 'Fallida', 'Validacion incompleta', 0, '/webhook', (response) => {
+      res.sendStatus(403);
+    }); 
   }  
 });
 
