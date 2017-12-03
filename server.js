@@ -340,7 +340,7 @@ function trackEvent (category, action, label, value, cb) {
     ev: value
   };
 
-  visitor.pageview("/", "http://kdabraapp.com", "Welcome", function (err) {
+  visitor.pageview("/test", "http://kdabraapp.com", "Welcome", function (err) {
     return visitor.event(data, function(err){
       cb(err);
     });
