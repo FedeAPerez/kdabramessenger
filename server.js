@@ -327,7 +327,7 @@ function receivedPostback(messagingEvent){
 }
 
 function trackEvent (category, action, label, value, cb) {
-  const data = {
+  var data = {
     // Event category.
     ec: category,
     // Event action.
