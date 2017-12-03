@@ -74,7 +74,7 @@ app.get('/webhook', function(req, res) {
  */
  function verifyRequestSignature(req, res, buf) {
   var signature = req.headers["x-hub-signature"];
-  var data = req.body;
+  var data = buf.body;
   if (!signature) {
     // For testing, let's log an error. In production, you should throw an 
     // error.
