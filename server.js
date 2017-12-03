@@ -84,14 +84,26 @@ app.get('/webhook', function(req, res) {
     var method = elements[0];
     var signatureHash = elements[1];
     // debemos conseguir el app secret según el page id
-    
-    var expectedHash = crypto.createHmac('sha1', "fc54e78765d094b1740350073166443f")
-    .update(buf)
-    .digest('hex');
+    var urlPageId = 'https://kdabraapi.herokuapp.com/users/pageid/{page_id}'.replace(/{page_id}/g, encodeURIComponent(req.body.page_id)) ;
 
-    if (signatureHash != expectedHash) {
-      throw new Error("Couldn't validate the request signature.");
-    }
+      request({
+        uri: urlPageId,
+        method: 'GET'
+
+      }, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+
+          var expectedHash = crypto.createHmac('sha1', "fc54e78765d094b1740350073166443f")
+          .update(buf)
+          .digest('hex');
+
+          if (signatureHash != expectedHash) {
+            throw new Error("Couldn't validate the request signature.");
+          }
+        } else {
+          console.error("Failed calling Send API");
+        }
+      });  
   }
 }
 
