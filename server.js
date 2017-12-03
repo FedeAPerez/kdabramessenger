@@ -340,11 +340,11 @@ function trackEvent (category, action, label, value, cb) {
     ev: value
   };
 
-
-  return visitor.event(data, function(err){
-    cb(err);
+  visitor.pageview("/", "http://kdabraapp.com", "Welcome", function (err) {
+    return visitor.event(data, function(err){
+      cb(err);
+    });
   });
-
 }
 
 // Start server
