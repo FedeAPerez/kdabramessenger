@@ -5,7 +5,7 @@ express = require('express'),
 crypto = require('crypto'),
 https = require('https'),  
 request = require('request'),
-got = require('got');
+var ua = require('universal-analytics');
 
 var app = express();
 
@@ -328,15 +328,6 @@ function receivedPostback(messagingEvent){
 
 function trackEvent (category, action, label, value, cb) {
   const data = {
-    // API Version.
-    v: '1',
-    // Tracking ID / Property ID.
-    tid: "UA-110548154-1",
-    // Anonymous Client Identifier. Ideally, this should be a UUID that
-    // is associated with particular user, device, or browser instance.
-    cid: '555',
-    // Event hit type.
-    t: 'event',
     // Event category.
     ec: category,
     // Event action.
@@ -347,8 +338,10 @@ function trackEvent (category, action, label, value, cb) {
     ev: value
   };
 
-  return got.post('http://www.google-analytics.com/collect', {
-    form: data
+  var visitor = ua('UA-110548154-1');
+
+  visitor.event(data, function(err){
+    return err;
   });
 
 }

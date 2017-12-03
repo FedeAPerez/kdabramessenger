@@ -26,6 +26,7 @@
     "got": "^8.0.1",
     "https": "^1.0.0",
     "mongodb": "^2.2.33",
-    "request": "^2.83.0"
+    "request": "^2.83.0",
+    "universal-analytics": "^0.4.16"
   }
 }
