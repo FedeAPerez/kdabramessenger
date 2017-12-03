@@ -5,7 +5,9 @@ express = require('express'),
 crypto = require('crypto'),
 https = require('https'),  
 request = require('request'),
-var ua = require('universal-analytics');
+ua = require('universal-analytics');
+
+var visitor = ua('UA-110548154-1');
 
 var app = express();
 
@@ -338,7 +340,6 @@ function trackEvent (category, action, label, value, cb) {
     ev: value
   };
 
-  var visitor = ua('UA-110548154-1');
 
   visitor.event(data, function(err){
     return err;
