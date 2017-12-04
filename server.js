@@ -118,12 +118,13 @@ app.post('/webhook', function (req, res) {
     // There may be multiple if batched
     data.entry.forEach(function(pageEntry) {
       var pageID = pageEntry.id;
-      console.log("el page id es " + pageID);
+
       var timeOfEvent = pageEntry.time;
 
       // Iterate over each messaging event
       pageEntry.messaging.forEach(function(messagingEvent, pageID) {
         botOptions.sessionId = messagingEvent.sender.id;
+              console.log("el page id es " + pageID);
         if (messagingEvent.optin) {
           //receivedAuthentication(messagingEvent);
         } else if (messagingEvent.message) {
