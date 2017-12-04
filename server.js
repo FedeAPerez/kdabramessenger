@@ -186,10 +186,10 @@ app.post('/webhook', function (req, res) {
 
     switch(quickReplyPayload){
       case "AVAIABLE_LOCATIONS":
-      sendTextMessage(senderID, "Hacemos envíos por toda la zona de Hurlingham!");
+      sendTextMessage(senderID, pageID, "Hacemos envíos por toda la zona de Hurlingham!");
       ;break;
       case "CONTACT":
-      sendTextMessage(senderID, "Podés contactarte al 11 6805 9706");
+      sendTextMessage(senderID, pageID, "Podés contactarte al 11 6805 9706");
       ;break;
     }
 
@@ -198,11 +198,12 @@ app.post('/webhook', function (req, res) {
 
   if (messageText) {
     if(senderID != 1419776951420132){
-      console.log("Received message %s and app %d with metadata");
+      //console.log("Received message %s and app %d with metadata");
     }else{
+      // Mensaje de echo
      userController.getAll(function(users){
       for (var i = 0; i < users.length; i++) {
-        sendTextMessage(users[i].id, messageText);
+        sendTextMessage(users[i].id, pageID, messageText);
       }
     });
    }
@@ -290,14 +291,14 @@ function receivedPostback(messagingEvent, pageID){
       /* *
        * Obtención de mensaje para la bienvenida
        * */
-      sendTextMessage(senderID, "Hola, y bienvenido al Almacén de Pán y Café. Clickea sobre el menú y mirá todas la info que te podemos dar!");
+      sendTextMessage(senderID, pageID, "Hola, y bienvenido al Almacén de Pán y Café. Clickea sobre el menú y mirá todas la info que te podemos dar!");
     ;break;
 
     case "AVAIABLE_LOCATIONS":
       /* *
        * Obtención de locaciones
        * */
-      sendTextMessage(senderID, "Hacemos envíos por toda la zona de Hurlingham!");
+      sendTextMessage(senderID, pageID, "Hacemos envíos por toda la zona de Hurlingham!");
     ;break;
 
     case "CONTACT":
