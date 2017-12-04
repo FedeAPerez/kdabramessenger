@@ -47,7 +47,7 @@ config.get('validationToken');
 
 
 /* *
- * Weebhock de conexión a KDABRA según page
+ * Weebhook de conexión a KDABRA según page
  * */
 app.get('/webhook', function(req, res) {
   // Token único para proceso de registrar
@@ -71,7 +71,7 @@ app.get('/webhook', function(req, res) {
  * callback in the x-hub-signature field, located in the header.
  *
  * https://developers.facebook.com/docs/graph-api/webhooks#setup
- *
+ * Reescribir validate de signature
  */
  function verifyRequestSignature(req, res, buf) {
   var signature = req.headers["x-hub-signature"];
@@ -121,16 +121,16 @@ app.post('/webhook', function (req, res) {
       var timeOfEvent = pageEntry.time;
 
       // Iterate over each messaging event
-      pageEntry.messaging.forEach(function(messagingEvent) {
+      pageEntry.messaging.forEach(function(messagingEvent, pageID) {
         botOptions.sessionId = messagingEvent.sender.id;
         if (messagingEvent.optin) {
           //receivedAuthentication(messagingEvent);
         } else if (messagingEvent.message) {
-          receivedMessage(messagingEvent);
+          receivedMessage(messagingEvent, pageID);
         } else if (messagingEvent.delivery) {
           //receivedDeliveryConfirmation(messagingEvent);
         } else if (messagingEvent.postback) {
-          receivedPostback(messagingEvent);
+          receivedPostback(messagingEvent, pageID);
         } else if (messagingEvent.read) {
           //receivedMessageRead(messagingEvent);
         } else if (messagingEvent.account_linking) {
@@ -163,7 +163,7 @@ app.post('/webhook', function (req, res) {
  * then we'll simply confirm that we've received the attachment.
  * 
  */
- function receivedMessage(event) {
+ function receivedMessage(event, pageID) {
   var senderID = event.sender.id;
   var recipientID = event.recipient.id;
   var timeOfMessage = event.timestamp;
@@ -215,7 +215,7 @@ app.post('/webhook', function (req, res) {
 /*
 * Mandar Mensaje de texto al messenger de fb
 */
-function sendTextMessage(recipientId, messageText) {
+function sendTextMessage(recipientId, pageID, messageText) {
   var messageData = {
     recipient: {
       id: recipientId
@@ -226,111 +226,107 @@ function sendTextMessage(recipientId, messageText) {
     }
   };
 
-  callSendAPI(messageData);
+  callSendAPI(messageData, pageID);
 }
 
 /*
 * Mandar cualquier tipo de mensaje
 */
-function callSendAPI(messageData) {
+function callSendAPI(messageData, pageID) {
+  /* *
+   * Necesario obtener access token según page_id
+   * */
+  var urlPageId = 'https://kdabraapi.herokuapp.com/users/pageid/{page_id}'.replace(/{page_id}/g, encodeURIComponent(pageID)) ;
+  console.log("la cadena de url quedo " + urlPageId);
   request({
-    uri: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: { access_token: PAGE_ACCESS_TOKEN },
-    method: 'POST',
-    json: messageData
+    uri: urlPageId,
+    method: 'GET'
 
   }, function (error, response, body) {
     if (!error && response.statusCode == 200) {
-      var recipientId = body.recipient_id;
-      var messageId = body.message_id;
+        request({
+          uri: 'https://graph.facebook.com/v2.6/me/messages',
+          qs: { access_token: PAGE_ACCESS_TOKEN },
+          method: 'POST',
+          json: messageData
 
-      if (messageId) {
-        console.log("Successfully sent message with id %s to recipient %s", 
-          messageId, recipientId);
-      } else {
-        console.log("Successfully called Send API for recipient %s", 
-          recipientId);
-      }
+        }, function (error, response, body) {
+          if (!error && response.statusCode == 200) {
+            var recipientId = body.recipient_id;
+            var messageId = body.message_id;
+
+            if (messageId) {
+              console.log("Successfully sent message with id %s to recipient %s", 
+                messageId, recipientId);
+            } else {
+              console.log("Successfully called Send API for recipient %s", 
+                recipientId);
+            }
+          } else {
+            console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+          }
+        });  
     } else {
-      console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+      console.error("Failed calling Send API");
     }
-  });  
+  });   
+
+
 }
 
-function userStartPostback(senderID){
-  var messageData = {
-    recipient: {
-      id: senderID
-    },
-    message: {
-      text:  "Hola, y bienvenido al Almacén de Pán y Café. Clickea sobre el menú y mirá todas la info que te podemos dar!",
-      quick_replies:[
-      {
-        content_type:"text",
-        title:"Contacto",
-        payload:"CONTACT"
-      },
-      {
-        content_type:"text",
-        title:"Lugares de Entrega",
-        payload:"AVAIABLE_LOCATIONS"
-      }
-      ]
-    }
-  };
-
-  callSendAPI(messageData);
-}
-
-function receivedPostback(messagingEvent){
+function receivedPostback(messagingEvent, pageID){
   var postBackObject = {};
-  console.log("recibi postback:" + JSON.stringify(messagingEvent.postback.payload));
-  console.log("que tiene el payload " + messagingEvent.postback.payload);
+
   try {
-   postBackObject =  JSON.parse(messagingEvent.postback.payload);
+    postBackObject =  JSON.parse(messagingEvent.postback.payload);
   } catch (e) {
-  postBackObject.payload = messagingEvent.postback.payload;
+    postBackObject.payload = messagingEvent.postback.payload;
   }
 
   var senderID = messagingEvent.sender.id;
 
   switch(postBackObject.payload){
     case "GET_STARTED_PAYLOAD":
+      /* *
+       * Obtención de mensaje para la bienvenida
+       * */
       sendTextMessage(senderID, "Hola, y bienvenido al Almacén de Pán y Café. Clickea sobre el menú y mirá todas la info que te podemos dar!");
-    
     ;break;
 
     case "AVAIABLE_LOCATIONS":
+      /* *
+       * Obtención de locaciones
+       * */
       sendTextMessage(senderID, "Hacemos envíos por toda la zona de Hurlingham!");
     ;break;
 
     case "CONTACT":
-    var messageData = {
-      recipient: {
-        id: senderID
-      },
-      message: {
-        attachment:{
-          type:"template",
-          payload:{
-            template_type:"button",
-            text:"Queres hablar con alguien del Almacen de Pan y Cafe?",
-            buttons:[
-            {
-              "type":"phone_number",
-              "title":"Apreta para llamar!",
-              "payload":"+541168059706"
+      /* *
+       * Obtención de numero y mensaje de contacto
+       * */
+      var messageData = {
+        recipient: {
+          id: senderID
+        },
+        message: {
+          attachment:{
+            type:"template",
+            payload:{
+              template_type:"button",
+              text:"Queres hablar con alguien del Almacen de Pan y Cafe?",
+              buttons:[
+              {
+                "type":"phone_number",
+                "title":"Apreta para llamar!",
+                "payload":"+541168059706"
+              }
+              ]
             }
-            ]
           }
         }
-      }
-    };
+      };
 
-    callSendAPI(messageData);
-    ;break;
-
-    userStartPostback(senderID);
+      callSendAPI(messageData, pageID);
     ;break;
   }     
 }
