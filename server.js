@@ -114,7 +114,6 @@ app.post('/webhook', function (req, res) {
   // Make sure this is a page subscription
   if (data.object == 'page') {
     // Iterate over each entry
-    console.log(JSON.stringify(data));
     // There may be multiple if batched
     data.entry.forEach(function(pageEntry) {
       var pageID = pageEntry.id;
@@ -124,7 +123,6 @@ app.post('/webhook', function (req, res) {
       // Iterate over each messaging event
       pageEntry.messaging.forEach(function(messagingEvent) {
         botOptions.sessionId = messagingEvent.sender.id;
-              console.log("el page id es " + pageID);
         if (messagingEvent.optin) {
           //receivedAuthentication(messagingEvent);
         } else if (messagingEvent.message) {
@@ -234,7 +232,6 @@ function callSendAPI(messageData, pageID) {
    * Necesario obtener access token según page_id
    * */
   var urlPageId = 'https://kdabraapi.herokuapp.com/users/pageid/{page_id}'.replace(/{page_id}/g, encodeURIComponent(pageID)) ;
-  console.log("la cadena de url quedo " + urlPageId);
   request({
     uri: urlPageId,
     method: 'GET'
@@ -243,7 +240,7 @@ function callSendAPI(messageData, pageID) {
     if (!error && response.statusCode == 200) {
         request({
           uri: 'https://graph.facebook.com/v2.6/me/messages',
-          qs: { access_token: PAGE_ACCESS_TOKEN },
+          qs: { access_token: body.result.access_token },
           method: 'POST',
           json: messageData
 
