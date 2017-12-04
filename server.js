@@ -240,7 +240,7 @@ function callSendAPI(messageData, pageID) {
     if (!error && response.statusCode == 200) {
         request({
           uri: 'https://graph.facebook.com/v2.6/me/messages',
-          qs: { access_token: body.result.access_token },
+          qs: { access_token: response.result.access_token },
           method: 'POST',
           json: messageData
 
