@@ -122,7 +122,7 @@ app.post('/webhook', function (req, res) {
       var timeOfEvent = pageEntry.time;
 
       // Iterate over each messaging event
-      pageEntry.messaging.forEach(function(messagingEvent, pageID) {
+      pageEntry.messaging.forEach(function(messagingEvent) {
         botOptions.sessionId = messagingEvent.sender.id;
               console.log("el page id es " + pageID);
         if (messagingEvent.optin) {
