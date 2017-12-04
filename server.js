@@ -229,9 +229,12 @@ function sendTextMessage(recipientId, pageID, messageText) {
 */
 function callSendAPI(messageData, pageID) {
   /* *
-   * Necesario obtener access token según page_id
+   * Federico Agustín Pérez
+   * Obtención de Access Token para envio de mensajes
    * */
-  var urlPageId = 'https://kdabraapi.herokuapp.com/users/pageid/{page_id}'.replace(/{page_id}/g, encodeURIComponent(pageID)) ;
+
+  var urlPageId = 'https://kdabraapi.herokuapp.com/users/pageid/{page_id}'.replace(/{page_id}/g, encodeURIComponent(pageID));
+  
   request({
     uri: urlPageId,
     method: 'GET'
@@ -239,7 +242,6 @@ function callSendAPI(messageData, pageID) {
   }, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       var bodyParsed = JSON.parse(body);
-      console.log("response body : " + bodyParsed.result);
         request({
           uri: 'https://graph.facebook.com/v2.6/me/messages',
           qs: { access_token: bodyParsed.result.access_token },
