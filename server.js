@@ -242,7 +242,7 @@ function callSendAPI(messageData, pageID) {
       console.log("response body : " + bodyParsed.result);
         request({
           uri: 'https://graph.facebook.com/v2.6/me/messages',
-          qs: { access_token: bodyResponse.result.access_token },
+          qs: { access_token: bodyParsed.result.access_token },
           method: 'POST',
           json: messageData
 
