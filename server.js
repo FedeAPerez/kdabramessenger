@@ -238,8 +238,7 @@ function callSendAPI(messageData, pageID) {
 
   }, function (error, response, body) {
     if (!error && response.statusCode == 200) {
-      var bodyResponse = JSON.parse(response);
-      console.log("response body : " + bodyResponse + " respon " + response);
+      console.log("response body : " + body + " respon " + response);
         request({
           uri: 'https://graph.facebook.com/v2.6/me/messages',
           qs: { access_token: bodyResponse.result.access_token },
