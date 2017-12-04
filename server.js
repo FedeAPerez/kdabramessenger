@@ -118,6 +118,7 @@ app.post('/webhook', function (req, res) {
     // There may be multiple if batched
     data.entry.forEach(function(pageEntry) {
       var pageID = pageEntry.id;
+      console.log("el page id es " + pageID);
       var timeOfEvent = pageEntry.time;
 
       // Iterate over each messaging event
@@ -185,12 +186,6 @@ app.post('/webhook', function (req, res) {
     var quickReplyPayload = quickReply.payload;
 
     switch(quickReplyPayload){
-      case "AVAIABLE_LOCATIONS":
-      sendTextMessage(senderID, pageID, "Hacemos envíos por toda la zona de Hurlingham!");
-      ;break;
-      case "CONTACT":
-      sendTextMessage(senderID, pageID, "Podés contactarte al 11 6805 9706");
-      ;break;
     }
 
     return;
