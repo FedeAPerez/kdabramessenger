@@ -229,7 +229,7 @@ function sendTextMessage(recipientId, pageID, messageText) {
 */
 function sendTextMessagePostback(recipientId, pageID, tagText) {
 
-  var urlPageId = 'https://kdabraapi.herokuapp.com/users/page_id/{page_id}/{tag_id}'
+  var urlPageId = 'https://kdabraapi.herokuapp.com/parameters/page_id/{page_id}/{tag_id}'
   .replace(/{page_id}/g, encodeURIComponent(pageID))
   .replace(/{tag_id}/g, encodeURIComponent(tagText));
 
