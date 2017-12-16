@@ -85,9 +85,7 @@ app.get('/webhook', function(req, res) {
     var method = elements[0];
     var signatureHash = elements[1];
     // debemos conseguir el app secret según el page id
-    console.log("con esto vamos a hacer la url " + JSON.stringify(data));
     var urlPageId = 'https://kdabraapi.herokuapp.com/users/page_id/{page_id}'.replace(/{page_id}/g, encodeURIComponent(req.body.entry[0].id)) ;
-      console.log("la cadena de url quedo " + urlPageId);
       request({
         uri: urlPageId,
         method: 'GET'
@@ -225,6 +223,48 @@ function sendTextMessage(recipientId, pageID, messageText) {
 }
 
 /*
+* Mandar Mensaje de texto al messenger de fb
+* Proveniente de postback
+* FAP - 16-12-2017
+*/
+function sendTextMessage(recipientId, pageID, tagText) {
+
+  var urlPageId = 'https://kdabraapi.herokuapp.com/users/page_id/{page_id}/{tag_id}'
+  .replace(/{page_id}/g, encodeURIComponent(pageID))
+  .replace(/{tag_id}/g, encodeURIComponent(tagText));
+
+  console.log("voy a consultar a " + urlPageId);
+
+  request({
+    uri: urlPageId,
+    method: 'GET'
+
+  }, function (error, response, body) {
+
+      var messageText;
+      if (!error && response.statusCode == 200) {
+        var bodyParsed = JSON.parse(body);
+        messageText = bodyParsed.result.value;
+      }
+      else {
+        messageText = "¡Al parecer esta pregunta no se configuró en KDABRA!";
+      }
+
+      var messageData = {
+        recipient: {
+          id: recipientId
+        },
+        message: {
+          text: messageText,
+          metadata: "DEVELOPER_DEFINED_METADATA"
+        }
+      };
+
+      callSendAPI(messageData, pageID);
+  });
+}
+
+/*
 * Mandar cualquier tipo de mensaje
 */
 function callSendAPI(messageData, pageID) {
@@ -242,7 +282,7 @@ function callSendAPI(messageData, pageID) {
   }, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       var bodyParsed = JSON.parse(body);
-      console.log("respuesta del bodyParsed " + JSON.stringify(bodyParsed));
+
         request({
           uri: 'https://graph.facebook.com/v2.6/me/messages',
           qs: { access_token: bodyParsed.result.access_token },
@@ -289,14 +329,14 @@ function receivedPostback(messagingEvent, pageID){
       /* *
        * Obtención de mensaje para la bienvenida
        * */
-      sendTextMessage(senderID, pageID, "Hola, y bienvenido al Almacén de Pán y Café. Clickea sobre el menú y mirá todas la info que te podemos dar!");
+      sendTextMessagePostback(senderID, pageID, "GET_STARTED_PAYLOAD");
     ;break;
 
     case "AVAIABLE_LOCATIONS":
       /* *
        * Obtención de locaciones
        * */
-      sendTextMessage(senderID, pageID, "Hacemos envíos por toda la zona de Hurlingham!");
+      sendTextMessagePostback(senderID, pageID, "AVAIABLE_LOCATIONS");
     ;break;
 
     case "CONTACT":
