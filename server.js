@@ -233,7 +233,7 @@ function callSendAPI(messageData, pageID) {
    * Obtención de Access Token para envio de mensajes
    * */
 
-  var urlPageId = 'https://kdabraapi.herokuapp.com/users/pageid/{page_id}'.replace(/{page_id}/g, encodeURIComponent(pageID));
+  var urlPageId = 'https://kdabraapi.herokuapp.com/users/page_id/{page_id}'.replace(/{page_id}/g, encodeURIComponent(pageID));
   
   request({
     uri: urlPageId,
