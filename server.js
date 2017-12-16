@@ -231,7 +231,7 @@ function sendTextMessagePostback(recipientId, page_id, parameter_id) {
 
   var urlPageId = 'https://kdabraapi.herokuapp.com/parameters/page_id/{page_id}/parameter_id/{parameter_id}'
   .replace(/{page_id}/g, encodeURIComponent(page_id))
-  .replace(/{tag_id}/g, encodeURIComponent(parameter_id));
+  .replace(/{parameter_id}/g, encodeURIComponent(parameter_id));
 
   console.log("voy a consultar a " + urlPageId);
 
