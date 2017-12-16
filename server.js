@@ -242,6 +242,7 @@ function callSendAPI(messageData, pageID) {
   }, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       var bodyParsed = JSON.parse(body);
+      console.log("respuesta del bodyParsed " + JSON.stringify(bodyParsed));
         request({
           uri: 'https://graph.facebook.com/v2.6/me/messages',
           qs: { access_token: bodyParsed.result.access_token },
@@ -265,7 +266,7 @@ function callSendAPI(messageData, pageID) {
           }
         });  
     } else {
-      console.error("Failed calling Send API");
+      console.error("Failed calling KDABRA API");
     }
   });   
 
