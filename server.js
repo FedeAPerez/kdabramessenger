@@ -227,11 +227,11 @@ function sendTextMessage(recipientId, pageID, messageText) {
 * Proveniente de postback
 * FAP - 16-12-2017
 */
-function sendTextMessagePostback(recipientId, pageID, tagText) {
+function sendTextMessagePostback(recipientId, page_id, parameter_id) {
 
-  var urlPageId = 'https://kdabraapi.herokuapp.com/parameters/page_id/{page_id}/{tag_id}'
-  .replace(/{page_id}/g, encodeURIComponent(pageID))
-  .replace(/{tag_id}/g, encodeURIComponent(tagText));
+  var urlPageId = 'https://kdabraapi.herokuapp.com/parameters/page_id/{page_id}/parameter_id/{parameter_id}'
+  .replace(/{page_id}/g, encodeURIComponent(page_id))
+  .replace(/{tag_id}/g, encodeURIComponent(parameter_id));
 
   console.log("voy a consultar a " + urlPageId);
 
