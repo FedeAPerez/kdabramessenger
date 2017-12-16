@@ -260,7 +260,7 @@ function sendTextMessagePostback(recipientId, page_id, parameter_id) {
         }
       };
 
-      callSendAPI(messageData, pageID);
+      callSendAPI(messageData, page_id);
   });
 }
 
