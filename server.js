@@ -325,20 +325,6 @@ function receivedPostback(messagingEvent, pageID){
   var senderID = messagingEvent.sender.id;
 
   switch(postBackObject.payload){
-    case "GET_STARTED_PAYLOAD":
-      /* *
-       * Obtención de mensaje para la bienvenida
-       * */
-      sendTextMessagePostback(senderID, pageID, "GET_STARTED_PAYLOAD");
-    ;break;
-
-    case "AVAIABLE_LOCATIONS":
-      /* *
-       * Obtención de locaciones
-       * */
-      sendTextMessagePostback(senderID, pageID, "AVAIABLE_LOCATIONS");
-    ;break;
-
     case "CONTACT":
       /* *
        * Obtención de numero y mensaje de contacto
@@ -366,6 +352,10 @@ function receivedPostback(messagingEvent, pageID){
       };
 
       callSendAPI(messageData, pageID);
+    ;break;
+    
+    default:
+      sendTextMessagePostback(senderID, pageID, postBackObject.payload);
     ;break;
   }     
 }
