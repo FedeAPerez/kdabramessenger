@@ -227,7 +227,7 @@ function sendTextMessage(recipientId, pageID, messageText) {
 * Proveniente de postback
 * FAP - 16-12-2017
 */
-function sendTextMessage(recipientId, pageID, tagText) {
+function sendTextMessagePostback(recipientId, pageID, tagText) {
 
   var urlPageId = 'https://kdabraapi.herokuapp.com/users/page_id/{page_id}/{tag_id}'
   .replace(/{page_id}/g, encodeURIComponent(pageID))
