@@ -240,25 +240,76 @@ function sendTextMessagePostback(recipientId, page_id, parameter_id) {
     method: 'GET'
 
   }, function (error, response, body) {
-
+      /* *
+       * Agregado de lógica para poder enviar diferentes tipos de mensajes
+       * */
       var messageText;
+      var messageData;
+
       if (!error && response.statusCode == 200) {
         var bodyParsed = JSON.parse(body);
         messageText = bodyParsed.result.value;
+        var type = bodyParsed.result.type;
+
+        switch(type)
+        {
+          case "text":
+            messageText = messageText;
+        
+            messageData = {
+              recipient: {
+                id: recipientId
+              },
+              message: {
+                text: messageText,
+                metadata: "DEVELOPER_DEFINED_METADATA"
+              }
+            };
+          ;break;
+
+          case "number":
+            /* *
+             * Obtención de numero y mensaje de contacto
+             * */
+            messageData = {
+              recipient: {
+                id: recipientId
+              },
+              message: {
+                attachment:{
+                  type:"template",
+                  payload:{
+                    template_type:"button",
+                    text: messageText,
+                    buttons:[
+                    {
+                      "type":"phone_number",
+                      "title":"Apreta para llamar!",
+                      "payload":bodyParsed.result.number
+                    }
+                    ]
+                  }
+                }
+              }
+            };
+          ;break;
+        }
+
       }
       else {
         messageText = "¡Al parecer esta pregunta no se configuró en KDABRA!";
-      }
+        
+        messageData = {
+          recipient: {
+            id: recipientId
+          },
+          message: {
+            text: messageText,
+            metadata: "DEVELOPER_DEFINED_METADATA"
+          }
+        };
 
-      var messageData = {
-        recipient: {
-          id: recipientId
-        },
-        message: {
-          text: messageText,
-          metadata: "DEVELOPER_DEFINED_METADATA"
-        }
-      };
+      }
 
       callSendAPI(messageData, page_id);
   });
@@ -324,39 +375,7 @@ function receivedPostback(messagingEvent, pageID){
 
   var senderID = messagingEvent.sender.id;
 
-  switch(postBackObject.payload){
-    case "CONTACT":
-      /* *
-       * Obtención de numero y mensaje de contacto
-       * */
-      var messageData = {
-        recipient: {
-          id: senderID
-        },
-        message: {
-          attachment:{
-            type:"template",
-            payload:{
-              template_type:"button",
-              text:"Queres hablar con alguien del Almacen de Pan y Cafe?",
-              buttons:[
-              {
-                "type":"phone_number",
-                "title":"Apreta para llamar!",
-                "payload":"+541168059706"
-              }
-              ]
-            }
-          }
-        }
-      };
-
-      callSendAPI(messageData, pageID);
-    ;break;
-    
-    default:
-      sendTextMessagePostback(senderID, pageID, postBackObject.payload);
-    ;break;
+  sendTextMessagePostback(senderID, pageID, postBackObject.payload);
   }     
 }
 

@@ -23,6 +23,16 @@ curl -X POST -H "Content-Type: application/json" -d '{
               "title":"Info de Contacto",
               "type":"postback",
               "payload":"CONTACT"
+            },
+            {
+              "title":"Horarios de Atencion",
+              "type":"postback",
+              "payload":"OPENING_HOURS"
+            },
+            {
+              "title":"Bot hecho en KDABRA",
+              "type":"postback",
+              "payload":"KDABRA_MKT"
             }
           ]
         }
