@@ -375,8 +375,7 @@ function receivedPostback(messagingEvent, pageID){
 
   var senderID = messagingEvent.sender.id;
 
-  sendTextMessagePostback(senderID, pageID, postBackObject.payload);
-  }     
+  sendTextMessagePostback(senderID, pageID, postBackObject.payload);   
 }
 
 function trackEvent (category, action, label, value, path, cb) {
