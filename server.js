@@ -250,7 +250,7 @@ function sendTextMessagePostback(recipientId, page_id, parameter_id) {
         var bodyParsed = JSON.parse(body);
         messageText = bodyParsed.result.value;
         var type = bodyParsed.result.type;
-
+        console.log("estoy identificando al tipo "+ type);
         switch(type)
         {
           case "text":
